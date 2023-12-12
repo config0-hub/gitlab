@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+
+import os
+import json
+from config0_publisher.resource_manage import to_jsonfile
+from config0_publisher.serialization import b64_encode
+#from config0_publisher.utilities import print_json
+
+terraform_state_file = os.environ.get("TERRAFORM_STATE_FILE","terraform.tfstate")
+
+with open(terraform_state_file) as json_file:
+    data = json.load(json_file)
+
+with open(terraform_state_file) as json_file:
+    raw = json.load(json_file)
+
+if not data:
+    print("ERROR - there is no data from {}".format(os.path.join(os.getcwd(),terraform_state_file)))
+    exit(9)
+
+_id = str(data["resources"][0]["instances"][0]["attributes"]["id"])
+
+results = {}
+results["resource_type"] = "gitlab_group"
+results["provider"] = "gitlab"
+results["main"] = True
+
+
+# we remove the runners token to exclude it in the raw terraform state file
+try:
+    del raw["resources"][0]["instances"][0]["attributes"]["runners_token"]
+except:
+    print("could not find runners_token field")
+
+results["raw"] = {"terraform":b64_encode(raw)}
+results["id"] = _id
+results["_id"] = _id
+
+results["runners_token"] = b64_encode(data["resources"][0]["instances"][0]["attributes"]["runners_token"])
+results["encrypt_fields"] = ["runners_token"]  # we encrypt for putting in database
+
+results["name"] = data["resources"][0]["instances"][0]["attributes"]["name"]
+results["full_name"] = data["resources"][0]["instances"][0]["attributes"]["full_name"]
+results["full_path"] = data["resources"][0]["instances"][0]["attributes"]["full_path"]
+results["visibility_level"] = data["resources"][0]["instances"][0]["attributes"]["visibility_level"]
+results["parent_id"] = str(data["resources"][0]["instances"][0]["attributes"]["parent_id"])
+results["tags"] = [ _id, results["resource_type"], results["visibility_level"], results["parent_id"] ]
+
+# ref 34532045732
+to_jsonfile(results,"resource.json")
