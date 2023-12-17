@@ -18,7 +18,7 @@ class Main(newSchedStack):
         self.parse.add_required(key="disksize",default="20") 
 
         self.parse.add_required(key="docker_host") 
-        self.parse.add_required(key="src_build_groups",default="config0-hub:::gitlab::runner,config0-hub:::gitlab::runner-autoscaling")
+        self.parse.add_required(key="src_build_groups",default="config0-publish:::gitlab::runner,config0-publish:::gitlab::runner-autoscaling")
         self.parse.add_required(key="docker_repo_name")
 
         self.parse.add_required(key="gitlab_runners_token_hash")
@@ -35,13 +35,13 @@ class Main(newSchedStack):
         self.parse.add_optional(key="bucket_acl",default="private")
 
         # Add substack
-        self.stack.add_substack('config0-hub:::gitlab_subgroup')
-        self.stack.add_substack('config0-hub:::aws_s3_bucket')
-        self.stack.add_substack('config0-hub:::new_ec2_ssh_key')
-        self.stack.add_substack('config0-hub:::aws_iam_role')
-        self.stack.add_substack('config0-hub:::ec2_ubuntu_admin')
-        self.stack.add_substack('config0-hub:::docker_build_ssh')
-        self.stack.add_substack('config0-hub:::delete_resource')
+        self.stack.add_substack('config0-publish:::gitlab_subgroup')
+        self.stack.add_substack('config0-publish:::aws_s3_bucket')
+        self.stack.add_substack('config0-publish:::new_ec2_ssh_key')
+        self.stack.add_substack('config0-publish:::aws_iam_role')
+        self.stack.add_substack('config0-publish:::ec2_ubuntu_admin')
+        self.stack.add_substack('config0-publish:::docker_build_ssh')
+        self.stack.add_substack('config0-publish:::delete_resource')
 
         self.stack.init_substacks()
     

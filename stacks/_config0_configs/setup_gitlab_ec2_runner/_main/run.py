@@ -37,11 +37,11 @@ class Main(newSchedStack):
         self.parse.add_optional(key="bucket_acl",default="private")
 
         # Add substack
-        self.stack.add_substack('config0-hub:::gitlab_subgroup')
-        self.stack.add_substack('config0-hub:::aws_s3_bucket')
-        self.stack.add_substack('config0-hub:::new_ec2_ssh_key')
-        self.stack.add_substack('config0-hub:::aws_iam')
-        self.stack.add_substack('config0-hub:::ec2_ubuntu_admin')
+        self.stack.add_substack('config0-publish:::gitlab_subgroup')
+        self.stack.add_substack('config0-publish:::aws_s3_bucket')
+        self.stack.add_substack('config0-publish:::new_ec2_ssh_key')
+        self.stack.add_substack('config0-publish:::aws_iam')
+        self.stack.add_substack('config0-publish:::ec2_ubuntu_admin')
 
         self.stack.init_substacks()
 

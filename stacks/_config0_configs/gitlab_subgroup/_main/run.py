@@ -16,8 +16,8 @@ def run(stackargs):
     stack.parse.add_optional(key="publish_to_saas",default="null")
 
     # Add execgroup
-    stack.add_execgroup("config0-hub:::gitlab::subgroup")
-    stack.add_substack('config0-hub:::config0-core::publish_resource')
+    stack.add_execgroup("config0-publish:::gitlab::subgroup")
+    stack.add_substack('config0-publish:::config0_core::publish_resource')
 
     # Initialize Variables in stack
     stack.init_variables()
