@@ -1,3 +1,7 @@
+########################################################################
+# example
+########################################################################
+#
 #{
 #  "concurrent": 4,
 #  "check_interval": 0,
@@ -74,23 +78,21 @@
 
 def _get_cache_config(stack):
 
-    s3 = { "ServerAddress": "s3.amazonaws.com",
+    s3 = {"ServerAddress": "s3.amazonaws.com",
            "AccessKey": stack.gitlab_runner_aws_access_key,
            "SecretKey": stack.gitlab_runner_aws_secret_key,
            "BucketName": stack.s3_bucket,
-           "BucketLocation": stack.aws_default_region
-           }
+           "BucketLocation": stack.aws_default_region}
 
-    cache = { "Type": "s3",
+    cache = {"Type": "s3",
               "Shared": True,
-              "s3": s3
-              }
+              "s3": s3}
 
     return cache
 
 def _get_machine_options(stack):
 
-    MachineOptions = [ "amazonec2-access-key={}".format(stack.gitlab_runner_aws_access_key),
+    MachineOptions = ["amazonec2-access-key={}".format(stack.gitlab_runner_aws_access_key),
                        "amazonec2-secret-key={}".format(stack.gitlab_runner_aws_secret_key),
                        "amazonec2-region={}".format(stack.aws_default_region),
                        "amazonec2-vpc-id={}".format(stack.vpc_id),
@@ -102,17 +104,15 @@ def _get_machine_options(stack):
                        "amazonec2-instance-type=t2.medium",
                        "amazonec2-request-spot-instance=true",
                        "amazonec2-spot-price={}".format(int(stack.spot_price)),
-                       "amazonec2-block-duration-minutes={}".format(int(stack.block_duration_minutes))
-                       ]
+                       "amazonec2-block-duration-minutes={}".format(int(stack.block_duration_minutes))]
 
-    machine = { "MachineDriver": "amazonec2",
+    machine = {"MachineDriver": "amazonec2",
                 "MachineName": "gitlab-ci-machine-%s",
                 "OffPeakTimezone": "",
                 "OffPeakIdleCount": 0,
                 "OffPeakIdleTime": 0,
                 "IdleCount": 0,
-                "MachineOptions": MachineOptions
-                }
+                "MachineOptions": MachineOptions}
 
     return machine
 
@@ -128,7 +128,7 @@ def _get_autoscaling(stack):
 
     if autoscaling: return autoscaling
 
-    autoscaling = [ { "Periods": [ "* * 9-17 * * mon-fri *"],
+    autoscaling = [{"Periods": [ "* * 9-17 * * mon-fri *"],
                       "IdleCount": 5,
                       "IdleTime": 3600,
                       "Timezone": "UTC"
@@ -146,7 +146,7 @@ def _get_gitlab_runner_toml(stack):
     
     import toml
 
-    runner = { "name": "gitlab-runner-autoscaler",
+    runner = {"name": "gitlab-runner-autoscaler",
                "url": "https://gitlab.com",
                "token": stack.gitlab_token,
                "executor": "docker+machine",
@@ -158,17 +158,15 @@ def _get_gitlab_runner_toml(stack):
                            "shm_size": 0
                            },
                "cache": stack._get_cache_config(stack),
-               "machine": stack._get_machine_options(stack),
-               }
+               "machine": stack._get_machine_options(stack)}
 
     autoscaling = stack._get_autoscaling(stack)
 
     if autoscaling: runner["autoscaling"] = autoscaling
 
-    values = { "concurrent": int(stack.runner_concurrent),
+    values = {"concurrent": int(stack.runner_concurrent),
                "check_interval": 0,
-               "runners": [ runner ]
-               }
+               "runners": [ runner ]}
 
     with open(stack.gitlab_runner_config_file,"w") as _f:
         toml.dump(values,_f )
@@ -220,13 +218,27 @@ def run(stackargs):
     # Add default variables
     stack.parse.add_required(key="gitlab_group_name")  # gitlab group name
 
-    stack.parse.add_required(key="runner_docker_image",default="alpine")
-    stack.parse.add_required(key="runner_concurrent",default="4")
-    stack.parse.add_required(key="s3_bucket",default="4")
-    stack.parse.add_required(key="aws_default_region",default="us-east-1")
-    stack.parse.add_required(key="aws_zone",default="a")
-    stack.parse.add_required(key="spot_price",default="0.05")
-    stack.parse.add_required(key="block_duration_minutes",default="60")
+    stack.parse.add_required(key="runner_docker_image",
+                             default="alpine")
+
+    stack.parse.add_required(key="runner_concurrent",
+                             default="4")
+
+    stack.parse.add_required(key="s3_bucket",
+                             default="4")
+
+    stack.parse.add_required(key="aws_default_region",
+                             default="us-east-1")
+
+    stack.parse.add_required(key="aws_zone",
+                             default="a")
+
+    stack.parse.add_required(key="spot_price",
+                             default="0.05")
+
+    stack.parse.add_required(key="block_duration_minutes",
+                             default="60")
+
     stack.parse.add_required(key="vpc_id")  # we can query this resources through selector
     stack.parse.add_required(key="subnet_ids")  # we can query this resources through selector
     stack.parse.add_required(key="sg_id")  # we can query this resources through selector
@@ -234,13 +246,17 @@ def run(stackargs):
     stack.parse.add_required(key="gitlab_token")
     stack.parse.add_required(key="gitlab_runner_aws_access_key")
     stack.parse.add_required(key="gitlab_runner_aws_secret_key")
-    stack.parse.add_optional(key="gitlab_runner_autoscaling_hash",default="null")
+    stack.parse.add_optional(key="gitlab_runner_autoscaling_hash",
+                             default="null")
 
-    stack.parse.add_optional(key="stateful_id",default="_random")
-    stack.parse.add_optional(key="docker_exec_env",default="elasticdev/terraform-run-env:1.3.7")
+    stack.parse.add_optional(key="stateful_id",
+                             default="_random")
+
+    stack.parse.add_optional(key="docker_exec_env",
+                             default="elasticdev/terraform-run-env:1.3.7")
 
     # Add execgroup
-    stack.add_execgroup("config0-publish:::gitlab::subgroup")
+    stack.add_execgroup("config0-hub:::gitlab::subgroup")
 
     # Initialize Variables in stack
     stack.init_variables()
@@ -250,4 +266,5 @@ def run(stackargs):
     stack.set_variable("subnet_id",stack.subnet_ids.split(",")[0])
 
     # temp file
-    stack.set_variable("gitlab_runner_config_file",os.path.join("/tmp",stack.random_id()))
+    stack.set_variable("gitlab_runner_config_file",
+                       os.path.join("/tmp",stack.random_id()))

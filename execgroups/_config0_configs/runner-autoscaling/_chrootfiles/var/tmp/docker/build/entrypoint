@@ -3,6 +3,7 @@
 # gitlab-runner data directory
 DATA_DIR="/etc/gitlab-runner"
 CONFIG_FILE=${CONFIG_FILE:-$DATA_DIR/config.toml}
+
 # custom certificate authority path
 CA_CERTIFICATES_PATH=${CA_CERTIFICATES_PATH:-$DATA_DIR/certs/ca.crt}
 LOCAL_CA_PATH="/usr/local/share/ca-certificates/ca.crt"

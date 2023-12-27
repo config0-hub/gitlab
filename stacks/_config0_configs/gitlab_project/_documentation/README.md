@@ -20,7 +20,7 @@
 ```
 infrastructure:
    project:
-       stack_name: config0-publish:::gitlab_project
+       stack_name: config0-hub:::gitlab_project
        arguments:
           gitlab_project_name: test101
           group_id: 5432522

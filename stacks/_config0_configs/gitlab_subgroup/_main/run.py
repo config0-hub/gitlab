@@ -7,17 +7,27 @@ def run(stackargs):
 
     # Add default variables
     stack.parse.add_required(key="group_name")
-    stack.parse.add_required(key="parent_id",default="null")
-    stack.parse.add_required(key="visibility_level",default="public")
+    stack.parse.add_required(key="parent_id",
+                             default="null")
 
-    stack.parse.add_optional(key="group_path",default='null')
-    stack.parse.add_optional(key="stateful_id",default="_random")
-    stack.parse.add_optional(key="docker_exec_env",default="elasticdev/terraform-run-env:1.3.7")
-    stack.parse.add_optional(key="publish_to_saas",default="null")
+    stack.parse.add_required(key="visibility_level",
+                             default="public")
+
+    stack.parse.add_optional(key="group_path",
+                             default='null')
+
+    stack.parse.add_optional(key="stateful_id",
+                             default="_random")
+
+    stack.parse.add_optional(key="docker_exec_env",
+                             default="elasticdev/terraform-run-env:1.3.7")
+
+    stack.parse.add_optional(key="publish_to_saas",
+                             default="null")
 
     # Add execgroup
-    stack.add_execgroup("config0-publish:::gitlab::subgroup")
-    stack.add_substack('config0-publish:::config0_core::publish_resource')
+    stack.add_execgroup("config0-hub:::gitlab::subgroup")
+    stack.add_substack("config0-hub:::config0-core::publish_resource")
 
     # Initialize Variables in stack
     stack.init_variables()
@@ -33,28 +43,28 @@ def run(stackargs):
         stack.logger.debug_highlight("parent_id found in inputvars")
         stack.set_variable("parent_id",stack.inputvars["parent_id"])
 
-    env_vars = {"stateful_id".upper(): stack.stateful_id }
-    env_vars["resource_type".upper()] = stack.resource_type
-    env_vars["docker_exec_env".upper()] = stack.docker_exec_env
-    env_vars["TF_VAR_group_name"] = stack.group_name
-    env_vars["TF_VAR_group_path"] = stack.group_path
-    env_vars["TF_VAR_parent_id"] = stack.parent_id
-    env_vars["TF_VAR_visibility_level"] = stack.visibility_level
+    env_vars = {"STATEFUL_ID": stack.stateful_id,
+                "RESOURCE_TYPE": stack.resource_type,
+                "DOCKER_EXEC_ENV": stack.docker_exec_env,
+                "TF_VAR_group_name": stack.group_name,
+                "TF_VAR_group_path": stack.group_path,
+                "TF_VAR_parent_id": stack.parent_id,
+                "TF_VAR_visibility_level": stack.visibility_level,
+                "METHOD": "create",
+                "RESOURCE_TAGS": "{}".format(stack.resource_type)}
 
-    env_vars["METHOD"] = "create"
-    env_vars["RESOURCE_TAGS"] = "{}".format(stack.resource_type)
-
-    docker_env_fields_keys = env_vars.keys()
+    docker_env_fields_keys = list(env_vars.keys())
     docker_env_fields_keys.append("GITLAB_TOKEN")
     docker_env_fields_keys.remove("METHOD")
 
     env_vars["DOCKER_ENV_FIELDS"] = ",".join(docker_env_fields_keys)
 
-    inputargs = {"display":True}
-    inputargs["env_vars"] = json.dumps(env_vars)
-    inputargs["display"] = True
-    inputargs["stateful_id"] = stack.stateful_id
-    inputargs["human_description"] = 'Creating subgroup "{}"'.format(stack.group_name)
+    human_description= 'Creating subgroup "{}"'.format(stack.group_name)
+    inputargs = {"display": True,
+                 "env_vars": json.dumps(env_vars),
+                 "stateful_id": stack.stateful_id,
+                 "human_description": human_description}
+
     stack.subgroup.insert(**inputargs)
 
     if not stack.get_attr("publish_to_saas"): 
@@ -69,15 +79,17 @@ def run(stackargs):
                         "resource_type",
                         "parent_id" ]
 
-    overide_values = { "name":stack.name }
-    default_values = { "resource_type":stack.resource_type }
-    default_values["publish_keys_hash"] = stack.b64_encode(keys_to_publish)
+    overide_values = {"name": stack.name}
 
-    inputargs = { "default_values":default_values,
-                  "overide_values":overide_values }
+    default_values = {"resource_type": stack.resource_type,
+                      "publish_keys_hash": stack.b64_encode(keys_to_publish)}
 
-    inputargs["automation_phase"] = "infrastructure"
-    inputargs["human_description"] = 'Publish resource info for {}'.format(stack.resource_type)
+    human_description = "Publish resource info for {}".format(stack.resource_type)
+    inputargs = {"default_values": default_values,
+                 "overide_values": overide_values,
+                 "automation_phase": "infrastructure",
+                 "human_description": human_description}
+
     stack.publish_resource.insert(display=True,**inputargs)
 
     return stack.get_results()
