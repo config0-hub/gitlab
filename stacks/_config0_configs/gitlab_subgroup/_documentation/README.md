@@ -25,7 +25,7 @@ labels:
      purpose: ci
 infrastructure:
    subgroup:
-       stack_name: config0-hub:::gitlab_subgroup
+       stack_name: config0-publish:::gitlab_subgroup
        arguments:
           group_name: gitlabci-101
           visibility_level: private
