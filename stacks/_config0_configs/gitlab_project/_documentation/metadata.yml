@@ -1,0 +1,12 @@
+desc: The creates a project in Gitlab SaaS.
+release: 0.0.1
+categories: 
+   - gitlab
+   - repository
+   - code_repo
+tags:
+   - project
+   - subgroup
+   - group
+   - host
+   - gitlab

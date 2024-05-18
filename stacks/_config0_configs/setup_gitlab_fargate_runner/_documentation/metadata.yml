@@ -1,0 +1,9 @@
+desc: This create gitlab runners in AWS fargate
+release: 0.0.1
+categories: 
+   - gitlab
+   - ci
+tags:
+   - aws
+   - fargate
+   - gitlab
