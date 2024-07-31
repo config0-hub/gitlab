@@ -340,7 +340,7 @@ LogFormat = "text"
 
     def run(self):
     
-        self.stack.unset_parallel()
+        self.stack.unset_parallel(sched_init=True)()
         self.add_job("sshkey")
         self.add_job("iam_role")
         self.add_job("s3")
