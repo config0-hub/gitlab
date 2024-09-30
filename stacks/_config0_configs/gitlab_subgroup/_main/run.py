@@ -50,8 +50,7 @@ def run(stackargs):
                 "TF_VAR_group_path": stack.group_path,
                 "TF_VAR_parent_id": stack.parent_id,
                 "TF_VAR_visibility_level": stack.visibility_level,
-                "METHOD": "create",
-                "RESOURCE_TAGS": "{}".format(stack.resource_type)}
+                "METHOD": "create"}
 
     docker_env_fields_keys = list(env_vars.keys())
     docker_env_fields_keys.append("GITLAB_TOKEN")
