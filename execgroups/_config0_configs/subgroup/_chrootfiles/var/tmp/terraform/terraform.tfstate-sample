@@ -1,0 +1,46 @@
+{
+  "version": 4,
+  "terraform_version": "0.14.6",
+  "serial": 3,
+  "lineage": "8ca1aaa4-1850-033a-b27a-826aede1dc81",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "gitlab_group",
+      "name": "default",
+      "provider": "provider[\"registry.terraform.io/gitlabhq/gitlab\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "auto_devops_enabled": false,
+            "default_branch_protection": 2,
+            "description": "A group test-group",
+            "emails_disabled": false,
+            "full_name": "Config0CI-101 / test-group",
+            "full_path": "config0ci-101/test",
+            "id": "53170705",
+            "lfs_enabled": true,
+            "mentions_disabled": false,
+            "name": "test-group",
+            "parent_id": 53170478,
+            "path": "test",
+            "prevent_forking_outside_group": false,
+            "project_creation_level": "maintainer",
+            "request_access_enabled": false,
+            "require_two_factor_authentication": false,
+            "runners_token": "GR1348941DA92mKvWR76yyeimG4nV",
+            "share_with_group_lock": false,
+            "subgroup_creation_level": "owner",
+            "two_factor_grace_period": 48,
+            "visibility_level": "public",
+            "web_url": "https://gitlab.com/groups/config0ci-101/test"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
+        }
+      ]
+    }
+  ]
+}

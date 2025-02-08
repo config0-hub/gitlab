@@ -1,0 +1,11 @@
+desc: The creates a subgroup in Gitlab SaaS.
+release: 0.0.1
+categories: 
+   - gitlab
+   - repository
+   - code_repo
+tags:
+   - subgroup
+   - group
+   - host
+   - gitlab

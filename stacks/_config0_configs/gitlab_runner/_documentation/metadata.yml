@@ -1,0 +1,9 @@
+desc: The creates gitlab runners autoscaling through docker-machine
+release: 0.0.1
+categories: 
+   - gitlab
+   - runners
+tags:
+   - runners
+   - gitlab
+   - autoscaling
